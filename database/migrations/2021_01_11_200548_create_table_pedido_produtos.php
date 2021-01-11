@@ -15,10 +15,11 @@ class CreateTablePedidoProdutos extends Migration
     {
         Schema::create('pedido_produtos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('pedido');
-            $table->foreign('pedido')->references('id')->on('pedido')->onDelete('cascade');
-            $table->unsignedBigInteger('pastel');
-            $table->foreign('pastel')->references('id')->on('pastel')->onDelete('cascade');
+            $table->unsignedBigInteger('pedidos');
+            $table->foreign('pedidos')->references('id')->on('pedidos')->onDelete('cascade');
+            $table->unsignedBigInteger('pastels');
+            $table->foreign('pastels')->references('id')->on('pastels')->onDelete('cascade');
+            $table->integer('quantidade')->default(true);
             $table->boolean('ativo')->default(true);
             $table->timestamps();
         });

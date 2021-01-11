@@ -13,10 +13,10 @@ class CreateTablePastel extends Migration
      */
     public function up()
     {
-        Schema::create('pastel', function (Blueprint $table) {
+        Schema::create('pastels', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->string('preco');
+            $table->double('preco');
             $table->string('foto');
             $table->boolean('ativo')->default(true);
             $table->timestamps();

@@ -13,10 +13,10 @@ class CreateTablePedido extends Migration
      */
     public function up()
     {
-        Schema::create('pedido', function (Blueprint $table) {
+        Schema::create('pedidos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('cliente');
-            $table->foreign('cliente')->references('id')->on('cliente')->onDelete('cascade');
+            $table->unsignedBigInteger('clients');
+            $table->foreign('clients')->references('id')->on('clients')->onDelete('cascade');
             $table->string('status');
             $table->boolean('ativo')->default(true);
             $table->timestamps();
