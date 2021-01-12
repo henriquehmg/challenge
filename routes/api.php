@@ -25,3 +25,12 @@ Route::prefix('/pastel')->group(function(){
     Route::put('/{id}', 'App\Http\Controllers\PastelController@update')->name('update_pastel');
     Route::delete('/{id}', 'App\Http\Controllers\PastelController@delete')->name('delete_pastel');
 });
+
+
+Route::prefix('/client')->group(function(){
+    Route::get('/', 'App\Http\Controllers\ClientController@index')->name('get_all_Client');
+    Route::get('/{id}', 'App\Http\Controllers\ClientController@show')->name('get_sigle_Client');
+    Route::post('/', 'App\Http\Controllers\ClientController@store')->name('new_Client');
+    Route::put('/{id}', 'App\Http\Controllers\ClientController@update')->name('update_Client');
+    Route::delete('/{id}', 'App\Http\Controllers\ClientController@delete')->name('delete_Client');
+});
