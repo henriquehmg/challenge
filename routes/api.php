@@ -17,3 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('/pastel')->group(function(){
+    Route::get('/', 'App\Http\Controllers\PastelController@index')->name('get_all_pastel');
+    Route::get('/{id}', 'App\Http\Controllers\PastelController@show')->name('get_sigle_pastel');
+    Route::post('/', 'App\Http\Controllers\PastelController@store')->name('new_pastel');
+    Route::put('/{id}', 'App\Http\Controllers\PastelController@update')->name('update_pastel');
+    Route::delete('/{id}', 'App\Http\Controllers\PastelController@delete')->name('delete_pastel');
+});
