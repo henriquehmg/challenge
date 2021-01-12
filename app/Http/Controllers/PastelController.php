@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pastel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class PastelController extends Controller
 {
@@ -28,11 +29,25 @@ class PastelController extends Controller
 
     public function store(Request $request)
     {
-        try{
-            $pastelData = $request->all();
-            $this->pastel->create($pastelData);
-            return response()->json(['msg' => 'Pastel criado com sucesso', 'cod' => '201'], 201);
+        $pastelData = $request->all();
+        $image = $request->file('photo');
 
+        try{
+            if($image){
+                $ext = $image->extension();
+                $allowedMimeTypes = ['jpeg','gif','png','bmp','svg+xml', 'jpg'];
+                //$contentType = mime_content_type(storage_path().$path);
+
+                if(in_array($ext, $allowedMimeTypes) ){
+                    $path = $image->store('images', 'public');
+                    $pastelData = array_merge($request->all(), ['foto' => $path]);
+                    $this->pastel->create($pastelData);
+                    return response()->json(['msg' => 'Pastel criado com sucesso', 'cod' => '201'], 201);
+                }
+
+
+            }
+            return response()->json(['msg' => 'Invalid Image', 'cod' => '502'], 500);
         } catch(\Exception $e){
             if(config('app.debug')){
                 return response()->json(['error'=> $e->getMessage(), 'codigo'=> '1010']);
