@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PedidoRealizado;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailer;
 use Illuminate\Support\Facades\DB;
 use Mail;
 
@@ -71,7 +73,12 @@ class PedidoController extends Controller
             }
             //$this->client->create($clientData);
 
-            return response()->json(['msg' => 'Pedido criado com sucesso', 'cod' => '201'], 201);
+            //Enviar email para o cliente
+
+
+
+
+
 
         } catch(\Exception $e){
             if(config('app.debug')){
@@ -79,6 +86,39 @@ class PedidoController extends Controller
             }
             return response()->json(['error'=> 'Erro ao realizar a operação', 'codigo'=> '1010']);
         }
+
+
+        $retorno = $this->pedido->where('id', $insert_pedido->id)->where('ativo', true)->first();
+        if($retorno){
+            $cliente = $retorno->getClient()->first();
+
+            $itens = $retorno->itensPedido()->get();
+            $produtos = array();
+            foreach($itens as $item){
+                //Pega a lista de todos os itens
+                $pastelGet = $item->pastelTipo()->first();
+                $insereArray = ['quantidade'=>$item->quantidade, 'pastel'=>$pastelGet];
+                array_push($produtos, $insereArray);
+                //Para pegar a nomeclatura do Pastel.
+                //
+
+                //Gerar um Json com todos os itens
+            }
+            $jsonPedido = ['id'=>$retorno->id, 'criado_em'=>$retorno->created_at, 'cliente'=>$cliente, 'itens'=> $produtos];
+            $email = new PedidoRealizado($jsonPedido);
+            $email->build();
+            return response()->json(['msg' => 'Pedido criado com sucesso', 'cod' => '201'], 201);
+        }else{
+            return response()->json(['codigo' =>'404']);
+        }
+
+
+
+
+
+
+
+
     }
 
     /**
