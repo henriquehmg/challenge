@@ -27,7 +27,7 @@ class PedidoController extends Controller
             $cliente = $retorno->getClient()->first();
             $jsonCliente = ['nome'=>$cliente->nome, 'email'=>$cliente->email, 'telefone'=>$cliente->telefone, 'data_nascimento'=>$cliente->data_de_nascimento, 'endereco'=>$cliente->endereco, 'complemento'=>$cliente->complemento, 'bairro'=>$cliente->bairro, 'cep'=>$cliente->cep, 'criadoEm'=>$cliente->created_at];
 
-            $itens = $retorno->itensPedido()->get();
+            $itens = $retorno->itensPedido()->where('ativo', true)->get();
             $produtos = array();
             foreach($itens as $item){
                 //Pega a lista de todos os itens
@@ -54,14 +54,6 @@ class PedidoController extends Controller
      */
     public function store(Request $request)
     {
-
-        //requisitos
-        // id_cliente
-        // pastel[
-            // quantidade
-            // id_pastel
-        // ]
-
         try{
             $requests = $request->all();
             $insert_pedido = $this->pedido->create(['clients'=>$requests["id_cliente"], 'status'=> '']);
@@ -73,13 +65,6 @@ class PedidoController extends Controller
             }
             //$this->client->create($clientData);
 
-            //Enviar email para o cliente
-
-
-
-
-
-
         } catch(\Exception $e){
             if(config('app.debug')){
                 return response()->json(['error'=> $e->getMessage(), 'codigo'=> '1010']);
@@ -87,7 +72,7 @@ class PedidoController extends Controller
             return response()->json(['error'=> 'Erro ao realizar a operação', 'codigo'=> '1010']);
         }
 
-
+        //Pega informações para envio de email
         $retorno = $this->pedido->where('id', $insert_pedido->id)->where('ativo', true)->first();
         if($retorno){
             $cliente = $retorno->getClient()->first();
@@ -99,26 +84,15 @@ class PedidoController extends Controller
                 $pastelGet = $item->pastelTipo()->first();
                 $insereArray = ['quantidade'=>$item->quantidade, 'pastel'=>$pastelGet];
                 array_push($produtos, $insereArray);
-                //Para pegar a nomeclatura do Pastel.
-                //
-
-                //Gerar um Json com todos os itens
             }
             $jsonPedido = ['id'=>$retorno->id, 'criado_em'=>$retorno->created_at, 'cliente'=>$cliente, 'itens'=> $produtos];
+            //Enviar email
             $email = new PedidoRealizado($jsonPedido);
             $email->build();
             return response()->json(['msg' => 'Pedido criado com sucesso', 'cod' => '201'], 201);
         }else{
             return response()->json(['codigo' =>'404']);
         }
-
-
-
-
-
-
-
-
     }
 
     /**
@@ -133,17 +107,13 @@ class PedidoController extends Controller
         if($retorno){
             $cliente = $retorno->getClient()->first();
 
-            $itens = $retorno->itensPedido()->get();
+            $itens = $retorno->itensPedido()->where('ativo', true)->get();
             $produtos = array();
             foreach($itens as $item){
                 //Pega a lista de todos os itens
                 $pastelGet = $item->pastelTipo()->first();
                 $insereArray = ['quantidade'=>$item->quantidade, 'pastel'=>$pastelGet];
                 array_push($produtos, $insereArray);
-                //Para pegar a nomeclatura do Pastel.
-                //
-
-                //Gerar um Json com todos os itens
             }
             $jsonPedido = ['id'=>$retorno->id, 'criado_em'=>$retorno->created_at, 'cliente'=>$cliente, 'itens'=> $produtos];
             return response()->json(['codigo' =>'200', 'data' =>$jsonPedido]);
@@ -161,6 +131,49 @@ class PedidoController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        //request->novo cliente
+        try{
+            $pedido_data = $request->all();
+            $pedido = $this->pedido->find($id);
+            if(isset($pedido_data['cliente'])){
+                $pedido->update(['clients'=>$pedido_data['cliente']]);
+            }
+            if(isset($pedido_data['novoPastel'])){
+                foreach ($pedido_data['novoPastel'] as $novoPastel) {
+                    $create = ["pedidosa" => $id, 'quantidade' => $novoPastel["quantidade"], 'pastels' => $novoPastel["id_pastel"]];
+                    DB::table('pedido_produtos')->insert($create);
+                }
+            }
+            if(isset($pedido_data['pastel'])){
+                foreach ($pedido_data['pastel'] as $alteraPastel) {
+                    $id_pastel_remove = DB::table('pedido_produtos')->where('pedidosa', $id)->where('pastels', $alteraPastel['idPastel'])->first()->id;
+                    DB::table('pedido_produtos')->where('id', $id_pastel_remove)->update(array('quantidade' => $alteraPastel['quantidade']));
+                }
+            }
+            if(isset($pedido_data['removePastel'])){
+                foreach ($pedido_data['removePastel'] as $removePastel) {
+                    $id_pastel_remove = DB::table('pedido_produtos')->where('pedidosa', $id)->where('pastels', $removePastel['idPastel'])->first()->id;
+                    DB::table('pedido_produtos')->where('id', $id_pastel_remove)->update(array('ativo' => '0'));
+                }
+            }
+
+            return response()->json(['msg' => 'Pedido atualizado com sucesso', 'cod' => '201'], 201);
+        } catch(\Exception $e){
+            if(config('app.debug')){
+                return response()->json(['msg' => 'Erro ao realizar a operação', 'cod' => '1010']);
+            }
+            return response()->json(['msg' => 'Erro ao realizar a operação', 'cod' => '1010']);
+        }
+
+        //update em:
+
+        //Mudar cliente
+        //adicionar produto ao pedido
+        //remover produto do pedido
+        //Alterar a quantidade do item desejado
+
+
 
     }
 
@@ -181,18 +194,5 @@ class PedidoController extends Controller
             }
             return response()->json(['msg' => 'Erro ao realizar a operação', 'cod' => '1010']);
         }
-    }
-
-    private function sendMail($idPedido)
-    {
-        $message = $this->show($idPedido);
-
-        // MailableMail::send('','', function ($message) {
-        //     $message->from('john@johndoe.com', 'John Doe');
-        //     $message->sender('john@johndoe.com', 'John Doe');
-        //     $message->to('john@johndoe.com', 'John Doe');
-        //     $message->subject('Pedido realizado');
-        //     $message->priority(3);
-        // });
     }
 }
