@@ -9,7 +9,7 @@
 <body>
 
     <h3>Requisitos de Hardware e software para utilização da API</h3>
-    <p>- Computador com Composer + Laravel + Artisan instalados em ambiente global</p>
+    <p>- Computador com Composer + Laravel 8.21.0 + Artisan + PHP 7.4.10 instalados em ambiente global</p>
     <p>- Banco de dados do tipo mariaDB ou MySQL devidamente instalado</p>
     <p>- HTTP client instalado, Ex.: <a href= 'https://www.postman.com/' target="_blank">Postman</a></p>
     <p>- Editor de texto/IDE para a edição das variáveis globais</p>
