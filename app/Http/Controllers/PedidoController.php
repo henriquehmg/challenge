@@ -54,6 +54,10 @@ class PedidoController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'id_cliente'=>'required',
+            'pastel'=>'required'
+        ]);
         try{
             $requests = $request->all();
             $insert_pedido = $this->pedido->create(['clients'=>$requests["id_cliente"], 'status'=> '']);

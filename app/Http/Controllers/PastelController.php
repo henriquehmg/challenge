@@ -28,6 +28,11 @@ class PastelController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'nome'=>'required',
+            'photo'=>'required',
+            'preco'=>'required'
+        ]);
         $pastelData = $request->all();
         $image = $request->file('photo');
 
