@@ -147,13 +147,13 @@ class PedidoController extends Controller
             }
             if(isset($pedido_data['pastel'])){
                 foreach ($pedido_data['pastel'] as $alteraPastel) {
-                    $id_pastel_remove = DB::table('pedido_produtos')->where('pedidosa', $id)->where('pastels', $alteraPastel['idPastel'])->first()->id;
+                    $id_pastel_remove = DB::table('pedido_produtos')->where('pedidosa', $id)->where('pastels', $alteraPastel['id_pastel'])->first()->id;
                     DB::table('pedido_produtos')->where('id', $id_pastel_remove)->update(array('quantidade' => $alteraPastel['quantidade']));
                 }
             }
             if(isset($pedido_data['removePastel'])){
                 foreach ($pedido_data['removePastel'] as $removePastel) {
-                    $id_pastel_remove = DB::table('pedido_produtos')->where('pedidosa', $id)->where('pastels', $removePastel['idPastel'])->first()->id;
+                    $id_pastel_remove = DB::table('pedido_produtos')->where('pedidosa', $id)->where('pastels', $removePastel['id_pastel'])->first()->id;
                     DB::table('pedido_produtos')->where('id', $id_pastel_remove)->update(array('ativo' => '0'));
                 }
             }
