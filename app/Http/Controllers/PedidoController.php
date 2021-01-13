@@ -144,19 +144,19 @@ class PedidoController extends Controller
                 $pedido->update(['clients'=>$pedido_data['cliente']]);
             }
             if(isset($pedido_data['novoPastel'])){
-                foreach ($pedido_data['novoPastel'] as $novoPastel) {
+                foreach (json_decode($pedido_data['novoPastel'], true) as $novoPastel) {
                     $create = ["pedidosa" => $id, 'quantidade' => $novoPastel["quantidade"], 'pastels' => $novoPastel["id_pastel"]];
                     DB::table('pedido_produtos')->insert($create);
                 }
             }
             if(isset($pedido_data['pastel'])){
-                foreach ($pedido_data['pastel'] as $alteraPastel) {
+                foreach (json_decode($pedido_data['pastel'], true) as $alteraPastel) {
                     $id_pastel_remove = DB::table('pedido_produtos')->where('pedidosa', $id)->where('pastels', $alteraPastel['id_pastel'])->first()->id;
                     DB::table('pedido_produtos')->where('id', $id_pastel_remove)->update(array('quantidade' => $alteraPastel['quantidade']));
                 }
             }
             if(isset($pedido_data['removePastel'])){
-                foreach ($pedido_data['removePastel'] as $removePastel) {
+                foreach (json_decode($pedido_data['removePastel'], true) as $removePastel) {
                     $id_pastel_remove = DB::table('pedido_produtos')->where('pedidosa', $id)->where('pastels', $removePastel['id_pastel'])->first()->id;
                     DB::table('pedido_produtos')->where('id', $id_pastel_remove)->update(array('ativo' => '0'));
                 }
