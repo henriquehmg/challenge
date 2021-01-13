@@ -27,6 +27,14 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'nome'=>'required',
+            'email'=>[
+                'required',
+                'unique:clients',
+            ],
+            'telefone'=>'required'
+        ]);
         try{
             $clientData = $request->all();
             $this->client->create($clientData);

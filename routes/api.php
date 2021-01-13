@@ -34,3 +34,11 @@ Route::prefix('/client')->group(function(){
     Route::put('/{id}', 'App\Http\Controllers\ClientController@update')->name('update_Client');
     Route::delete('/{id}', 'App\Http\Controllers\ClientController@delete')->name('delete_Client');
 });
+
+Route::prefix('/pedido')->group(function(){
+    Route::get('/', 'App\Http\Controllers\PedidoController@index')->name('get_all_Pedido');
+    Route::get('/{id}', 'App\Http\Controllers\PedidoController@show')->name('get_sigle_Pedido');
+    Route::post('/', 'App\Http\Controllers\PedidoController@store')->name('new_Pedido');
+    Route::put('/{id}', 'App\Http\Controllers\PedidoController@update')->name('update_Pedido');
+    Route::delete('/{id}', 'App\Http\Controllers\PedidoController@delete')->name('delete_Pedido');
+});

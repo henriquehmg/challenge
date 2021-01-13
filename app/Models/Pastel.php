@@ -14,4 +14,6 @@ class Pastel extends Model
         'preco',
         'foto'
     ];
+
+
 }

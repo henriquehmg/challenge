@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Pastel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 
 class PastelController extends Controller
 {
