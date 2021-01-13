@@ -17,7 +17,7 @@ class CreateTablePedido extends Migration
             $table->id();
             $table->unsignedBigInteger('clients');
             $table->foreign('clients')->references('id')->on('clients')->onDelete('cascade');
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->boolean('ativo')->default(true);
             $table->timestamps();
         });

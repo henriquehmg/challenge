@@ -10,7 +10,7 @@ class PedidoProduto extends Model
     use HasFactory;
 
     protected $fillable = [
-        'pedidos',
+        'pedidosa',
         'quantidade',
         'pastels'
     ];

@@ -17,7 +17,7 @@ class Pedido extends Model
 
     public function itensPedido()
     {
-        return $this->hasMany(PedidoProduto::class, 'pedidos');
+        return $this->hasMany(PedidoProduto::class, 'pedidosa');
     }
     public function getClient()
     {
@@ -25,7 +25,7 @@ class Pedido extends Model
     }
     public function relacaoInsert()
     {
-        return $this->hasMany(PedidoProduto::class, 'pedidos', 'pastels', 'quantidade');
+        return $this->hasMany(PedidoProduto::class, 'pedidosa', 'pastels', 'quantidade');
     }
 
 }

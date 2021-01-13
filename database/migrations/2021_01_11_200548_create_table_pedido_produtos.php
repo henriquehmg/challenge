@@ -15,8 +15,8 @@ class CreateTablePedidoProdutos extends Migration
     {
         Schema::create('pedido_produtos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('pedidos');
-            $table->foreign('pedidos')->references('id')->on('pedidos')->onDelete('cascade');
+            $table->unsignedBigInteger('pedidosa');
+            $table->foreign('pedidosa')->references('id')->on('pedidos')->onDelete('cascade');
             $table->unsignedBigInteger('pastels');
             $table->foreign('pastels')->references('id')->on('pastels')->onDelete('cascade');
             $table->integer('quantidade')->default(true);

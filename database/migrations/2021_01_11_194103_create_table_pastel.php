@@ -17,7 +17,7 @@ class CreateTablePastel extends Migration
             $table->id();
             $table->string('nome');
             $table->double('preco');
-            $table->string('foto');
+            $table->string('foto')->nullable();
             $table->boolean('ativo')->default(true);
             $table->timestamps();
         });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\DB;
 use Mail;
 
 class PedidoController extends Controller
@@ -62,16 +63,15 @@ class PedidoController extends Controller
         try{
             $requests = $request->all();
             $insert_pedido = $this->pedido->create(['clients'=>$requests["id_cliente"], 'status'=> '']);
-            $pedidos_get = ['id_insert'=>$insert_pedido->id];
-            if(is_null($pedidos_get["id_insert"])) return response()->json(['error'=> 'Erro ao realizar a operação', 'codigo'=> '401']);
             foreach(json_decode($requests["pastel"], true) as $pastel){
-                $create = ['pedidos'=> $pedidos_get["id_insert"], 'quantidade'=>$pastel["quantidade"], 'pastels'=> $pastel["id_pastel"]]; // Algum erro aqui!
+                $create = ["pedidosa" => $insert_pedido->id, 'quantidade' => $pastel["quantidade"], 'pastels' => $pastel["id_pastel"]]; // Algum erro aqui!
                 //return response()->json(['msg' => $create, 'cod' => '201'], 201);
-                $this->pedido->relacaoInsert()->create($create);
+                DB::table('pedido_produtos')->insert($create);
+                //$this->pedido->relacaoInsert()->create($create);
             }
             //$this->client->create($clientData);
 
-            return response()->json(['msg' => 'Cliente criado com sucesso', 'cod' => '201'], 201);
+            return response()->json(['msg' => 'Pedido criado com sucesso', 'cod' => '201'], 201);
 
         } catch(\Exception $e){
             if(config('app.debug')){
